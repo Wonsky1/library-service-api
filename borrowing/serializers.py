@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -27,6 +28,32 @@ class BorrowingSerializer(serializers.ModelSerializer):
             ValidationError
         )
         return data
+
+    @transaction.atomic()
+    def create(self, validated_data):
+        borrowing = Borrowing.objects.create(**validated_data)
+        book = validated_data["book"]
+        book.inventory -= 1
+        book.save()
+        return borrowing
+
+    @transaction.atomic()
+    def update(self, instance, validated_data):
+        returned = instance.actual_return_date
+        instance.expected_return_date = validated_data.get(
+            "expected_return_date",
+            instance.expected_return_date
+        )
+        instance.actual_return_date = validated_data.get(
+            "actual_return_date", instance.actual_return_date
+        )
+        book = validated_data["book"]
+        if instance.actual_return_date and returned is None:
+            book.inventory += 1
+        instance.save()
+        book.save()
+
+        return instance
 
 
 class BorrowingListSerializer(BorrowingSerializer):
