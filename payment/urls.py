@@ -1,11 +1,11 @@
 from django.urls import path, include
 from rest_framework import routers
 
-from library.views import BookViewSet
+from payment.views import PaymentViewSet
 
 router = routers.DefaultRouter()
-router.register("book", BookViewSet)
+router.register("payment", PaymentViewSet)
 
 urlpatterns = [path("", include(router.urls))]
 
-app_name = "library"
+app_name = "payment"
