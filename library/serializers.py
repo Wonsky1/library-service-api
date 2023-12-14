@@ -6,7 +6,14 @@ from library.models import Book
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ("id", "title", "author", "cover", "inventory", "daily")
+        fields = (
+            "id",
+            "title",
+            "author",
+            "cover",
+            "inventory",
+            "daily"
+        )
 
 
 class BookDetailSerializer(BookSerializer):
@@ -14,7 +21,15 @@ class BookDetailSerializer(BookSerializer):
 
     class Meta:
         model = Book
-        fields = ("id", "title", "author", "cover", "inventory", "daily", "borrowings")
+        fields = (
+            "id",
+            "title",
+            "author",
+            "cover",
+            "inventory",
+            "daily",
+            "borrowings"
+        )
 
     def get_borrowings(self, obj):
         borrowing_objects = obj.borrowings.all()

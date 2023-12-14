@@ -50,7 +50,12 @@ class BorrowingListSerializer(BorrowingSerializer):
 class UserShowsSerializer(UserSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "email", "first_name", "last_name")
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name"
+        )
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):

@@ -1,5 +1,4 @@
 from rest_framework import serializers
-
 from borrowing.serializers import BorrowingListSerializer, BorrowingDetailSerializer
 from payment.models import Payment
 
@@ -7,13 +6,15 @@ from payment.models import Payment
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = ("id",
-                  "status",
-                  "type",
-                  "borrowing",
-                  "session_url",
-                  "session_id",
-                  "money_to_pay")
+        fields = (
+            "id",
+            "status",
+            "type",
+            "borrowing",
+            "session_url",
+            "session_id",
+            "money_to_pay"
+        )
 
 
 class PaymentListSerializer(PaymentSerializer):
@@ -21,13 +22,15 @@ class PaymentListSerializer(PaymentSerializer):
 
     class Meta:
         model = Payment
-        fields = ("id",
-                  "status",
-                  "type",
-                  "borrowing",
-                  "session_url",
-                  "session_id",
-                  "money_to_pay")
+        fields = (
+            "id",
+            "status",
+            "type",
+            "borrowing",
+            "session_url",
+            "session_id",
+            "money_to_pay"
+        )
 
 
 class PaymentDetailSerializer(PaymentSerializer):
