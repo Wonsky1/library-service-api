@@ -15,7 +15,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "borrow_date",
             "expected_return_date",
             "actual_return_date",
-            "books",
+            "book",
             "user"
         )
 
@@ -30,8 +30,8 @@ class BorrowingSerializer(serializers.ModelSerializer):
 
 
 class BorrowingListSerializer(BorrowingSerializer):
-    books = serializers.SlugRelatedField(
-        many=True, read_only=True, slug_field="title"
+    book = serializers.SlugRelatedField(
+        many=False, read_only=True, slug_field="title"
     )
     user = serializers.CharField(source="user.email", read_only=True)
 
@@ -42,7 +42,7 @@ class BorrowingListSerializer(BorrowingSerializer):
             "borrow_date",
             "expected_return_date",
             "actual_return_date",
-            "books",
+            "book",
             "user"
         )
 
@@ -54,5 +54,5 @@ class UserShowsSerializer(UserSerializer):
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
-    books = BookSerializer(many=True, read_only=True)
+    book = BookSerializer(many=False, read_only=True)
     user = UserShowsSerializer(many=False, read_only=True)
