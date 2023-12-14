@@ -1,11 +1,9 @@
-from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from borrowing.models import Borrowing
 from library.serializers import BookSerializer
-from user.serializers import UserSerializer
 
 
 class BorrowingSerializer(serializers.ModelSerializer):
@@ -17,7 +15,6 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
-            "user"
         )
 
     def validate(self, attrs):
@@ -61,7 +58,6 @@ class BorrowingListSerializer(BorrowingSerializer):
     book = serializers.SlugRelatedField(
         many=False, read_only=True, slug_field="title"
     )
-    user = serializers.CharField(source="user.email", read_only=True)
 
     class Meta:
         model = Borrowing
@@ -71,21 +67,8 @@ class BorrowingListSerializer(BorrowingSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
-            "user"
-        )
-
-
-class UserShowsSerializer(UserSerializer):
-    class Meta:
-        model = get_user_model()
-        fields = (
-            "id",
-            "email",
-            "first_name",
-            "last_name"
         )
 
 
 class BorrowingDetailSerializer(BorrowingSerializer):
     book = BookSerializer(many=False, read_only=True)
-    user = UserShowsSerializer(many=False, read_only=True)
