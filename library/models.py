@@ -11,7 +11,7 @@ class Book(models.Model):
     author = models.CharField(max_length=150)
     cover = models.CharField(max_length=1, choices=COVER_CHOICES)
     inventory = models.PositiveIntegerField()
-    daily = models.DecimalField()
+    daily = models.DecimalField(max_digits=7, decimal_places=2)
 
 
 class Borrowing(models.Model):
