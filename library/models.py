@@ -11,3 +11,6 @@ class Book(models.Model):
     cover = models.CharField(max_length=1, choices=COVER_CHOICES)
     inventory = models.PositiveIntegerField()
     daily = models.DecimalField(max_digits=7, decimal_places=2)
+
+    def __str__(self):
+        return self.title

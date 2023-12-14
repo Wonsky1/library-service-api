@@ -10,12 +10,13 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class BookDetailSerializer(BookSerializer):
-    borrowings = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field="user.email"
-    )
+    borrowings = serializers.SerializerMethodField()
 
     class Meta:
         model = Book
         fields = ("id", "title", "author", "cover", "inventory", "daily", "borrowings")
+
+    def get_borrowings(self, obj):
+        borrowing_objects = obj.borrowings.all()
+        user_emails = borrowing_objects.values_list("user__email", flat=True)
+        return user_emails
