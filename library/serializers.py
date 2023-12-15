@@ -4,6 +4,8 @@ from library.models import Book
 
 
 class BookSerializer(serializers.ModelSerializer):
+    cover = serializers.ChoiceField(choices=Book.COVER_CHOICES)
+
     class Meta:
         model = Book
         fields = (
@@ -14,6 +16,12 @@ class BookSerializer(serializers.ModelSerializer):
             "inventory",
             "daily"
         )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        cover_value = instance.get_cover_display()
+        representation["cover"] = cover_value
+        return representation
 
 
 class BookDetailSerializer(BookSerializer):
