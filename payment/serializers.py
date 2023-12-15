@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from borrowing.serializers import BorrowingListSerializer, BorrowingDetailSerializer
 from payment.models import Payment
 
 
