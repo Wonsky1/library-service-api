@@ -14,7 +14,8 @@ class BookSerializer(serializers.ModelSerializer):
             "author",
             "cover",
             "inventory",
-            "daily"
+            "daily",
+            "image"
         )
 
     def to_representation(self, instance):
