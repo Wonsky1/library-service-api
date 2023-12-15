@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -21,6 +23,20 @@ class Borrowing(models.Model):
         related_name="borrowings"
     )
 
+    @property
+    def days_from_borrow(self):
+        if self.actual_return_date is not None:
+            date = self.actual_return_date - self.borrow_date
+            return date.days
+        date = timezone.now().date() - self.borrow_date
+        return date.days
+
+    @property
+    def is_active(self):
+        if self.actual_return_date is None:
+            return True
+        return False
+
     @staticmethod
     def validate_book_return_time(
             expected_date,
@@ -33,6 +49,8 @@ class Borrowing(models.Model):
             raise error_to_raise(
                 f"Expected return date must be greater than {today}"
             )
+        if expected_date > today + timedelta(days=14):
+            raise error_to_raise(f"Expected return date must be less than {timedelta(days=14).days}")
         if book_inventory <= 0:
             raise error_to_raise(
                 "You can't borrow the book, current book inventory must be "

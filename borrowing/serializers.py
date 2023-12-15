@@ -15,6 +15,8 @@ class BorrowingSerializer(serializers.ModelSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
+            "days_from_borrow",
+            "is_active",
         )
 
     def validate(self, attrs):
@@ -66,6 +68,7 @@ class BorrowingListSerializer(BorrowingSerializer):
             "expected_return_date",
             "actual_return_date",
             "book",
+            "days_from_borrow",
         )
 
 
