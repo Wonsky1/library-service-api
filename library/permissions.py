@@ -10,3 +10,6 @@ class IsAdminOrReadOnly(BasePermission):
             return True
 
         return False
+
+    def has_object_permission(self, request, view, obj):
+        return False
