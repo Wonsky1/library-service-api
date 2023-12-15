@@ -1,11 +1,11 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import BasePermission
 
 
-class IsAdminOrIfAuthenticatedReadOnly(BasePermission):
+class IsAdminOrIfAuthenticatedReadAndCreateOnly(BasePermission):
     def has_permission(self, request, view):
         return bool(
             (
-                request.method in SAFE_METHODS
+                request.method in ("GET", "POST", "HEAD", "OPTIONS")
                 and request.user
                 and request.user.is_authenticated
             )

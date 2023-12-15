@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
 from borrowing.models import Borrowing
-from borrowing.permission import IsAdminOrIfAuthenticatedReadOnly
+from borrowing.permission import IsAdminOrIfAuthenticatedReadAndCreateOnly
 from borrowing.serializers import (
     BorrowingSerializer,
     BorrowingListSerializer,
@@ -22,7 +22,7 @@ class BorrowingListPagination(PageNumberPagination):
 class BorrowingViewSet(viewsets.ModelViewSet):
     queryset = Borrowing.objects.all()
     serializer_class = BorrowingSerializer
-    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
+    permission_classes = (IsAdminOrIfAuthenticatedReadAndCreateOnly,)
     pagination_class = BorrowingListPagination
 
     def get_queryset(self):
