@@ -14,7 +14,7 @@ from borrowing.serializers import (
     BorrowingCreateSerializer,
     BorrowingUpdateSerializer,
     BorrowingAdminListSerializer,
-    BorrowingAdminDetailSerializer,
+    BorrowingAdminDetailSerializer, BorrowingReturnSerializer,
 )
 
 
@@ -46,6 +46,8 @@ class BorrowingViewSet(viewsets.ModelViewSet):
             return BorrowingAdminDetailSerializer
         if self.action == "retrieve":
             return BorrowingDetailSerializer
+        if self.action == "return_borrowing":
+            return BorrowingReturnSerializer
         if self.request.method == "POST":
             return BorrowingCreateSerializer
         if self.request.method in ("PUT", "PATCH"):
