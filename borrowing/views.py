@@ -20,7 +20,7 @@ class BorrowingListPagination(PageNumberPagination):
 class BorrowingViewSet(viewsets.ModelViewSet):
     queryset = Borrowing.objects.all()
     serializer_class = BorrowingSerializer
-    permission_classes = IsAdminOrIfAuthenticatedReadOnly
+    permission_classes = (IsAdminOrIfAuthenticatedReadOnly,)
     pagination_class = BorrowingListPagination
 
     def get_queryset(self):

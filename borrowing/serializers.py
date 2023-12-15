@@ -21,7 +21,6 @@ class BorrowingSerializer(serializers.ModelSerializer):
         data = super(BorrowingSerializer, self).validate(attrs=attrs)
         Borrowing.validate_book_return_time(
             attrs["expected_return_date"],
-            attrs["actual_return_date"],
             attrs["book"],
             ValidationError
         )
@@ -74,7 +73,7 @@ class BorrowingDetailSerializer(BorrowingSerializer):
     book = BookSerializer(many=False, read_only=True)
 
 
-class BorrowingCreateSerializer(serializers.ModelSerializer):
+class BorrowingCreateSerializer(BorrowingSerializer):
     class Meta:
         model = Borrowing
         fields = (
@@ -85,7 +84,7 @@ class BorrowingCreateSerializer(serializers.ModelSerializer):
         )
 
 
-class BorrowingUpdateSerializer(serializers.ModelSerializer):
+class BorrowingUpdateSerializer(BorrowingSerializer):
     class Meta:
         model = Borrowing
         fields = (
