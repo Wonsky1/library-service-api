@@ -16,28 +16,33 @@ def count_total_price(borrowing):
         days_borrowing = 1
 
     elif borrowing.expected_return_date >= borrowing.actual_return_date:
-        days_borrowing = (borrowing.actual_return_date
-                          - borrowing.borrow_date
-                          ).days
+        days_borrowing = (
+                borrowing.actual_return_date
+                - borrowing.borrow_date
+        ).days
     else:
-        days_borrowing = (borrowing.expected_return_date
-                          - borrowing.borrow_date
-                          ).days
+        days_borrowing = (
+                borrowing.expected_return_date
+                - borrowing.borrow_date
+        ).days
 
-    price_in_cents = int(days_borrowing
-                         * borrowing.book.daily
-                         * 100
-                         )
+    price_in_cents = int(
+        days_borrowing
+        * borrowing.book.daily
+        * 100
+    )
 
-    overdue_days = (borrowing.actual_return_date
-                    - borrowing.expected_return_date
-                    ).days
+    overdue_days = (
+            borrowing.actual_return_date
+            - borrowing.expected_return_date
+    ).days
 
-    fine_in_cents = int(overdue_days
-                        * borrowing.book.daily
-                        * FINE_MULTIPLIER
-                        * 100
-                        ) if overdue_days > 0 else 0
+    fine_in_cents = int(
+        overdue_days
+        * borrowing.book.daily
+        * FINE_MULTIPLIER
+        * 100
+    ) if overdue_days > 0 else 0
 
     return price_in_cents + fine_in_cents
 
