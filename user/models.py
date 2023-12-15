@@ -43,7 +43,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     telegram_notifications_enabled = models.BooleanField(default=False)
-    telegram_name = models.CharField(max_length=255, null=True, unique=True)
+    telegram_id = models.PositiveIntegerField(null=True, unique=True)
 
     email = models.EmailField(_("email address"), unique=True)
 

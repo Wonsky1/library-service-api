@@ -5,7 +5,14 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ("id", "email", "password", "is_staff", "telegram_notifications_enabled", "telegram_name")
+        fields = (
+            "id",
+            "email",
+            "password",
+            "is_staff",
+            "telegram_notifications_enabled",
+            "telegram_id"
+        )
         read_only_fields = ("is_staff",)
         extra_kwargs = {"password": {"write_only": True, "min_length": 5}}
 
@@ -14,8 +21,11 @@ class UserSerializer(serializers.ModelSerializer):
         return get_user_model().objects.create_user(**validated_data)
 
     def validate(self, attrs):
-        if attrs.get("telegram_notifications_enabled") and not attrs.get("telegram_name"):
-            raise serializers.ValidationError("Name is required when 'Telegram notifications enabled' is True")
+        if (attrs.get("telegram_notifications_enabled") and
+                not attrs.get("telegram_id")):
+            raise serializers.ValidationError("Name is required when"
+                                              " 'Telegram notifications enabled'"
+                                              " is True")
         return attrs
 
     def update(self, instance, validated_data):
