@@ -12,6 +12,7 @@ from payment.serializers import (
     PaymentListSerializer,
     PaymentDetailSerializer,
 )
+from user.permissions import IsAdminOrIfAuthenticatedReadOnly
 
 
 class PaymentViewSet(
@@ -21,7 +22,7 @@ class PaymentViewSet(
 ):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
-    #TODO: permsission:classes = [IsAdminOrIfAuthenticatedReadOnly, ]
+    permission_classes = [IsAdminOrIfAuthenticatedReadOnly, ]
 
     def get_queryset(self):
         queryset = self.queryset
