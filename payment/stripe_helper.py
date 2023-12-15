@@ -28,7 +28,7 @@ def count_total_price(borrowing):
 
     price_in_cents = int(
         days_borrowing
-        * borrowing.book.daily
+        * float(borrowing.book.daily)
         * 100
     )
 
@@ -39,7 +39,7 @@ def count_total_price(borrowing):
 
     fine_in_cents = int(
         overdue_days
-        * borrowing.book.daily
+        * float(borrowing.book.daily)
         * FINE_MULTIPLIER
         * 100
     ) if overdue_days > 0 else 0
