@@ -49,8 +49,11 @@ class Borrowing(models.Model):
             raise error_to_raise(
                 f"Expected return date must be greater than {today}"
             )
-        if expected_date > today + timedelta(days=14):
-            raise error_to_raise(f"Expected return date must be less than {timedelta(days=14).days}")
+        overdue = timedelta(days=14)
+        if expected_date > today + overdue:
+            raise error_to_raise(
+                f"Expected return date must be less than {overdue.days}"
+            )
         if book_inventory <= 0:
             raise error_to_raise(
                 "You can't borrow the book, current book inventory must be "
