@@ -12,7 +12,8 @@ class BookSerializer(serializers.ModelSerializer):
             "author",
             "cover",
             "inventory",
-            "daily"
+            "daily",
+            "image"
         )
 
 
