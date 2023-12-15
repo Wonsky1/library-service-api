@@ -9,6 +9,8 @@ from borrowing.serializers import (
     BorrowingDetailSerializer,
     BorrowingCreateSerializer,
     BorrowingUpdateSerializer,
+    BorrowingAdminListSerializer,
+    BorrowingAdminDetailSerializer,
 )
 
 
@@ -27,11 +29,17 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         queryset = self.queryset
         if self.action in ("list", "retrieve"):
             queryset = queryset.select_related("book", "user")
-        return self.queryset.filter(user=self.request.user)
+        if self.request.user.is_staff is True:
+            return queryset
+        return queryset.filter(user=self.request.user)
 
     def get_serializer_class(self):
-        if self.action == "list":
+        if self.action == "list" and self.request.user.is_staff is False:
             return BorrowingListSerializer
+        if self.action == "list" and self.request.user.is_staff is True:
+            return BorrowingAdminListSerializer
+        if self.action == "retrieve" and self.request.user.is_staff is True:
+            return BorrowingAdminDetailSerializer
         if self.action == "retrieve":
             return BorrowingDetailSerializer
         if self.request.method == "POST":
