@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 
 from borrowing.models import Borrowing
-from user.permission import IsAdminOrIfAuthenticatedReadAndCreateOnly
+from user.permissions import IsAdminOrIfAuthenticatedReadAndCreateOnly
 from borrowing.serializers import (
     BorrowingSerializer,
     BorrowingListSerializer,
