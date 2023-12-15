@@ -14,7 +14,8 @@ from borrowing.serializers import (
     BorrowingCreateSerializer,
     BorrowingUpdateSerializer,
     BorrowingAdminListSerializer,
-    BorrowingAdminDetailSerializer, BorrowingReturnSerializer,
+    BorrowingAdminDetailSerializer,
+    BorrowingReturnSerializer,
 )
 
 
