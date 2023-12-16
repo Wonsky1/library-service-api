@@ -1,8 +1,12 @@
+
 from rest_framework import viewsets, serializers, status
 from rest_framework.decorators import action
+from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from borrowing.models import Borrowing
 from payment.models import Payment
@@ -32,11 +36,40 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+        is_active = self.request.query_params.get("is_active")
+        user_id = self.request.query_params.get("user_id")
+
         if self.action in ("list", "retrieve"):
             queryset = queryset.select_related("book", "user")
+
+        if is_active in ("True", "1"):
+            queryset = queryset.filter(actual_return_date=None)
+
+        if self.request.user.is_staff and user_id:
+            queryset = queryset.filter(user_id=int(user_id))
+
         if self.request.user.is_staff is True:
             return queryset
         return queryset.filter(user=self.request.user)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "is_active",
+                type=bool,
+                description="Filter by borrowing is active (ex. ?is_active=True)",
+                required=False,
+            ),
+            OpenApiParameter(
+                "user_id",
+                type=int,
+                description="Filter by user id (ex. ?user_id=2)",
+                required=False,
+            ),
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_serializer_class(self):
         if self.action == "list" and self.request.user.is_staff is False:
