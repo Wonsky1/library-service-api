@@ -66,12 +66,12 @@ class SuccessPaymentView(APIView):
             payment.save()
 
             return Response(
-                {"message": "Borrowing returned successfully"},
+                {"message": "The return of the borrowed book was successful."},
                 status=status.HTTP_200_OK
             )
         else:
             return Response(
-                {"message": "Payment not found or already processed"},
+                {"message": "Payment not found or already completed."},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
@@ -84,7 +84,7 @@ class CancelPaymentView(APIView):
         if payment:
 
             return Response(
-                {"message": "Payment can be paid a bit later"},
+                {"message": "The payment can be made a little later."},
                 status=status.HTTP_200_OK
             )
         else:

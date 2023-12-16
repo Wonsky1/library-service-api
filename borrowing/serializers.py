@@ -147,7 +147,8 @@ class BorrowingUpdateSerializer(BorrowingSerializer):
 class BorrowingReturnSerializer(serializers.ModelSerializer):
     message = serializers.CharField(
         max_length=63,
-        default="Make a payment first for a successful borrowing return",
+        default="To successfully complete the return of the borrowed book, "
+                "please make a payment first.",
         read_only=True
     )
     payments = PaymentSerializer(many=True, read_only=True)
@@ -168,7 +169,7 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
 
         if borrowing.actual_return_date:
             raise serializers.ValidationError(
-                "This borrowing has already been returned."
+                "The borrowed book has already been returned."
             )
 
         return attrs
