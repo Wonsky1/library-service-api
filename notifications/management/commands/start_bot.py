@@ -11,7 +11,7 @@ from notifications.bot_helper import obtain_token, check_user, connected_user_wi
 
 load_dotenv()
 
-BOT_ON = False
+BOT_ON = bool(os.getenv("TURN_BOT_ON", False))
 
 bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
