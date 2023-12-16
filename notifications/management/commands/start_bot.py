@@ -11,6 +11,7 @@ from notifications.bot_helper import obtain_token, check_user, connected_user_wi
 
 load_dotenv()
 
+BOT_ON = False
 
 bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
@@ -48,4 +49,5 @@ class Command(BaseCommand):
     """Django command to pause execution until db is available"""
 
     def handle(self, *args, **options):
-        asyncio.run(main())
+        if BOT_ON:
+            asyncio.run(main())
