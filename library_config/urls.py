@@ -28,9 +28,9 @@ from library_config import settings
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/user/", include("user.urls", namespace="user")),
-    path("api/borrowings/", include("borrowing.urls", namespace="borrowing")),
-    path("api/books/", include("library.urls", namespace="library")),
-    path("api/payment/", include("payment.urls", namespace="payment")),
+    path("api/library/", include("borrowing.urls", namespace="borrowing")),
+    path("api/library/", include("library.urls", namespace="library")),
+    path("api/library/", include("payment.urls", namespace="payment")),
     path("api/doc/", SpectacularAPIView.as_view(), name="schema"),
     path(
         "api/doc/swagger/",
