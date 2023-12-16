@@ -1,6 +1,9 @@
+import asyncio
+
 from asgiref.sync import sync_to_async
 from django.contrib.auth import get_user_model
 from django.db.utils import IntegrityError
+
 
 @sync_to_async
 def check_user(parameter: int):
@@ -39,3 +42,8 @@ def connected_user_with_telegram(user: get_user_model(), telegram_id: int) -> st
             return "This telegram account is already registered for another account"
 
     return "You need to reset your telegram id, to connect to this telegram account"
+
+
+
+# if __name__ == '__main__':
+#     send_notification(telegram_id=562745779, payment=True)

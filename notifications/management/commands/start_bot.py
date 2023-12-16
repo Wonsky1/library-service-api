@@ -16,10 +16,9 @@ bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 
 
-async def send_message(telegram_ids: list, message: str):
+async def send_message(telegram_id: int, message: str):
 
-    for telegram_id in telegram_ids:
-        await bot.send_message(chat_id=telegram_id, text=message, parse_mode=ParseMode.MARKDOWN)
+    await bot.send_message(chat_id=telegram_id, text=message, parse_mode=ParseMode.MARKDOWN)
 
 
 @dp.message(CommandStart())
