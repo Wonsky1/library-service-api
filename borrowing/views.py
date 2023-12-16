@@ -1,4 +1,4 @@
-
+from django.db import transaction
 from rest_framework import viewsets, serializers, status
 from rest_framework.decorators import action
 from rest_framework import viewsets
@@ -96,6 +96,7 @@ class BorrowingViewSet(viewsets.ModelViewSet):
             IsAuthenticated,
         ],
     )
+    @transaction.atomic
     def return_borrowing(self, request, pk=None):
         user = self.request.user
         borrowing = self.get_object()

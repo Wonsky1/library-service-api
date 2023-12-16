@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "user",
     "payment",
     "django_celery_beat",
+    "notifications",
 ]
 
 MIDDLEWARE = [
@@ -159,6 +160,7 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # TODO: Change this before deploy
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
     "ROTATE_REFRESH_TOKENS": False,
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZE"
 }
 
 SPECTACULAR_SETTINGS = {
