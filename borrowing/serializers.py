@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework import serializers
@@ -5,6 +7,8 @@ from rest_framework.exceptions import ValidationError
 
 from borrowing.models import Borrowing
 from library.serializers import BookSerializer
+from payment.serializers import PaymentSerializer
+from payment.stripe_helper import create_stripe_session
 from user.serializers import UserSerializer
 
 
@@ -138,3 +142,45 @@ class BorrowingUpdateSerializer(BorrowingSerializer):
             "expected_return_date",
             "book",
         )
+
+
+class BorrowingReturnSerializer(serializers.ModelSerializer):
+    message = serializers.CharField(
+        max_length=63,
+        default="To successfully complete the return of the borrowed book, "
+                "please make a payment first.",
+        read_only=True
+    )
+    payments = PaymentSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Borrowing
+        fields = (
+            "message",
+            "payments",
+        )
+        read_only_fields = (
+            "message",
+            "payments",
+        )
+
+    def validate(self, attrs):
+        borrowing = self.instance
+
+        if borrowing.actual_return_date:
+            raise serializers.ValidationError(
+                "The borrowed book has already been returned."
+            )
+
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance.actual_return_date = datetime.date.today()
+        instance.book.inventory += 1
+        instance.book.save()
+        instance.save()
+
+        request = self.context.get("request")
+        create_stripe_session(instance, request)
+
+        return instance
