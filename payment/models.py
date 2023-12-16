@@ -6,15 +6,15 @@ from user.models import User
 
 
 class Payment(models.Model):
-    STATUS_CHOICES = {
-        "PENDING": "Pending",
-        "PAID": "Paid",
-    }
+    STATUS_CHOICES = [
+        ("PENDING", "Pending"),
+        ("PAID", "Paid"),
+    ]
 
-    TYPE_CHOICES = {
-        "PAYMENT": "Payment",
-        "FINE": "Fine"
-    }
+    TYPE_CHOICES = [
+        ("PAYMENT", "Payment"),
+        ("FINE", "Fine"),
+    ]
 
     status = models.CharField(max_length=63, choices=STATUS_CHOICES)
     type = models.CharField(max_length=63, choices=TYPE_CHOICES)
