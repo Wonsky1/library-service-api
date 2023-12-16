@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from borrowing.models import Borrowing
 from library.serializers import BookSerializer
+from payment.models import Payment
 from payment.serializers import PaymentSerializer
 from payment.stripe_helper import create_stripe_session
 from user.serializers import UserSerializer
@@ -78,8 +79,15 @@ class BorrowingListSerializer(BorrowingSerializer):
         )
 
 
+class BorrowingListPaymentSerializer(PaymentSerializer):
+    class Meta:
+        model = Payment
+        fields = ("id", "status")
+
+
 class BorrowingAdminListSerializer(BorrowingListSerializer):
     user = serializers.CharField(source="user.email", read_only=True)
+    payments = BorrowingListPaymentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Borrowing
@@ -92,6 +100,7 @@ class BorrowingAdminListSerializer(BorrowingListSerializer):
             "book",
             "days_from_borrow",
             "is_active",
+            "payments",
         )
 
 
@@ -106,8 +115,22 @@ class BorrowingDetailUserSerializer(UserSerializer):
         fields = ("id", "email", "first_name", "last_name")
 
 
+class BorrowingDetailPaymentSerializer(PaymentSerializer):
+    class Meta:
+        model = Payment
+        fields = (
+            "id",
+            "status",
+            "type",
+            "session_id",
+            "session_url",
+            "money_to_pay",
+        )
+
+
 class BorrowingAdminDetailSerializer(BorrowingDetailSerializer):
     user = BorrowingDetailUserSerializer(many=False, read_only=True)
+    payments = BorrowingDetailPaymentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Borrowing
@@ -120,6 +143,7 @@ class BorrowingAdminDetailSerializer(BorrowingDetailSerializer):
             "book",
             "days_from_borrow",
             "is_active",
+            "payments"
         )
 
 
