@@ -26,6 +26,36 @@ services:
       - .env
 
   redis:
-    image: redis
+    image: redis:alpine
     ports:
       - "6379:6379"
+
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A library_config worker -l INFO
+    volumes:
+      - ./:/app
+
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - app
+
+  celery-beat:
+    restart: always
+    build:
+      context: .
+    command: celery -A library_config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - ./:/app
+
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - app

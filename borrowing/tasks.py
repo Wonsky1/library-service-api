@@ -11,23 +11,3 @@ from django.utils import timezone
 def count():
     return User.objects.count()
 
-    # users = User.objects.all()
-    # total = 0
-    # for user in users:
-    #     if user.plane_date_return < timezone.now():
-    #         total += 1
-    # return total
-
-
-
-
-
-
-
-from celery import Celery
-
-app = Celery('tasks', backend='redis://localhost', broker='redis://localhost')
-
-@app.task
-def add(x, y):
-    return x + y
