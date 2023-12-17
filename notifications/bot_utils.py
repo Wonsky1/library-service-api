@@ -2,17 +2,21 @@ import asyncio
 
 import threading
 from typing import Awaitable, TypeVar
+
 T = TypeVar("T")
+
 
 def _start_background_loop(loop):
     asyncio.set_event_loop(loop)
     loop.run_forever()
+
 
 _LOOP = asyncio.new_event_loop()
 _LOOP_THREAD = threading.Thread(
     target=_start_background_loop, args=(_LOOP,), daemon=True
 )
 _LOOP_THREAD.start()
+
 
 def asyncio_run(coro: Awaitable[T], timeout=30) -> T:
     """
@@ -23,7 +27,9 @@ def asyncio_run(coro: Awaitable[T], timeout=30) -> T:
     :param coro: A coroutine, typically an async method
     :param timeout: How many seconds we should wait for a result before raising an error
     """
-    return asyncio.run_coroutine_threadsafe(coro, _LOOP).result(timeout=timeout)
+    return asyncio.run_coroutine_threadsafe(coro, _LOOP).result(
+        timeout=timeout
+    )
 
 
 def asyncio_gather(*futures, return_exceptions=False) -> list:
@@ -32,6 +38,8 @@ def asyncio_gather(*futures, return_exceptions=False) -> list:
     """
 
     async def gather():
-        return await asyncio.gather(*futures, return_exceptions=return_exceptions)
+        return await asyncio.gather(
+            *futures, return_exceptions=return_exceptions
+        )
 
     return asyncio.run_coroutine_threadsafe(gather(), loop=_LOOP).result()

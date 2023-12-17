@@ -7,7 +7,11 @@ from aiogram.filters import CommandStart
 from django.core.management import BaseCommand
 from dotenv import load_dotenv
 
-from notifications.bot_helper import obtain_token, check_user, connected_user_with_telegram
+from notifications.bot_helper import (
+    obtain_token,
+    check_user,
+    connected_user_with_telegram,
+)
 
 load_dotenv()
 
@@ -18,8 +22,9 @@ dp = Dispatcher()
 
 
 async def send_message(telegram_id: int, message: str):
-
-    await bot.send_message(chat_id=telegram_id, text=message, parse_mode=ParseMode.MARKDOWN)
+    await bot.send_message(
+        chat_id=telegram_id, text=message, parse_mode=ParseMode.MARKDOWN
+    )
 
 
 @dp.message(CommandStart())
@@ -29,10 +34,11 @@ async def cmd_start(message: types.Message):
         user = await check_user(parameter)
         if user:
             await message.answer(f"Hello, {user}!")
-            result_message = await connected_user_with_telegram(user, message.from_user.id)
+            result_message = await connected_user_with_telegram(
+                user, message.from_user.id
+            )
 
             await message.answer(result_message)
-
 
     else:
         await message.answer(f"Not found user")
