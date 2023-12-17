@@ -8,7 +8,6 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = DetailUserSerializer
 
 
-
 class ManageUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
     authentication_classes = (JWTAuthentication,)
