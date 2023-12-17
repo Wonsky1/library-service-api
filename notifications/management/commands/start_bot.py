@@ -3,7 +3,7 @@ import os
 
 from aiogram import Bot, Dispatcher, types, Router
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart, Command
+from aiogram.filters import CommandStart
 from django.core.management import BaseCommand
 from dotenv import load_dotenv
 
