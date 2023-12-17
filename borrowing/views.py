@@ -1,5 +1,3 @@
-import asyncio
-
 from django.db import transaction
 from rest_framework import viewsets, serializers, status
 from rest_framework.decorators import action
@@ -11,7 +9,6 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from borrowing.models import Borrowing
-from notifications import bot_commands
 from payment.models import Payment
 from user.permissions import IsAdminOrIfAuthenticatedReadAndCreateOnly
 from borrowing.serializers import (
@@ -126,12 +123,6 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def perform_create(self, serializer):
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(bot_commands._send_payment_notification(-4050199237, {}))
-        loop.run_until_complete(bot_commands._send_overdue_notification(-4050199237, {}))
-        loop.close()
-
         user = self.request.user
         has_pending_payments = Payment.objects.filter(
             user=user, status="PENDING"
