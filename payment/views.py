@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from borrowing.models import Borrowing
+from notifications.bot_commands import send_payment_notification
 from payment.models import Payment
 
 from payment.serializers import (
@@ -67,6 +68,9 @@ class SuccessPaymentView(APIView):
             borrowing.book.save()
             borrowing.save()
             payment.save()
+
+            if borrowing.user.telegram_id and borrowing.user.telegram_notifications_enabled:
+                send_payment_notification(borrowing.user.telegram_id, payment)
 
             return Response(
                 {"message": "Payment of the borrowed book was successful."},
