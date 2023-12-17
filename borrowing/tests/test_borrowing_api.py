@@ -16,6 +16,7 @@ from borrowing.serializers import (
     BorrowingAdminDetailSerializer,
 )
 from library.models import Book
+from payment.models import Payment
 
 BORROWING_URL = reverse("borrowing:borrowing-list")
 VALID_DATE = timezone.now().date() + timedelta(days=2)
@@ -193,6 +194,7 @@ class AuthenticatedBorrowingApiTests(TestCase):
         self.assertEqual(response2.data["results"], serializer.data)
 
     def test_create_borrowing_with_invalid_negative_expected_date(self):
+        today = timezone.now().date()
         yesterday = timezone.now().date() - timedelta(days=1)
         book = sample_book()
         payload = {
@@ -203,6 +205,10 @@ class AuthenticatedBorrowingApiTests(TestCase):
         borrowings = Borrowing.objects.count()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(borrowings, 0)
+        expected_error_message = (
+            f"Expected return date must be greater than {today}"
+        )
+        self.assertIn(expected_error_message, response.data["non_field_errors"])
 
     def test_create_borrowing_with_invalid_too_big_expected_date(self):
         book = sample_book()
@@ -215,6 +221,10 @@ class AuthenticatedBorrowingApiTests(TestCase):
         borrowings = Borrowing.objects.count()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(borrowings, 0)
+        expected_error_message = (
+            f"Expected return date must be less than 14"
+        )
+        self.assertIn(expected_error_message, response.data["non_field_errors"])
 
     def test_create_borrowing_with_invalid_zero_inventory_books(self):
         book = sample_book(inventory=0)
@@ -226,6 +236,48 @@ class AuthenticatedBorrowingApiTests(TestCase):
         borrowings = Borrowing.objects.count()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(borrowings, 0)
+        expected_error_message = (
+            "You can't borrow the book, current book inventory must be "
+            f"greater than. Current book inventory: {book.inventory}")
+
+        self.assertIn(expected_error_message, response.data["non_field_errors"])
+
+    def test_return_borrowing(self):
+        borrowing = sample_borrowing(user=self.user)
+        url = detail_url(borrowing.id) + "return/"
+        return_data = {
+            "actual_return_date": timezone.now().date(),
+        }
+
+        response = self.client.patch(url, return_data)
+        borrowing.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_return_borrowing_with_pending_payment(self):
+        borrowing = sample_borrowing(user=self.user)
+        Payment.objects.create(
+            user=self.user,
+            borrowing=borrowing,
+            status="PENDING",
+        )
+
+        url = detail_url(borrowing.id) + "return/"
+        return_data = {
+            "actual_return_date": timezone.now().date(),
+        }
+        response = self.client.patch(url, return_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        expected_error_message = "You have to pay before returning the book."
+        self.assertIn(expected_error_message, response.data[0])
+
+    def test_borrowing_return(self):
+        borrowing = sample_borrowing(user=self.user)
+        count1 = borrowing.book.inventory
+        url = detail_url(borrowing.id) + "return/"
+        self.client.patch(url)
+        borrowing.refresh_from_db()
+        count2 = borrowing.book.inventory
+        self.assertNotEqual(count1, count2)
 
     def test_borrowing_update_delete_authorized_forbidden(self):
         payload = VALID_PAYLOAD
