@@ -1,7 +1,5 @@
 import asyncio
 
-import nest_asyncio
-
 import threading
 from typing import Awaitable, TypeVar
 T = TypeVar("T")
