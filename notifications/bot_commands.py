@@ -40,7 +40,7 @@ async def _send_borrowing_notification(
 
 
 def send_borrowing_notification(telegram_id, borrowing):
-    payment_info = pending_payment = borrowing.payments.filter(status="PENDING").first()
+    payment_info = borrowing.payments.filter(status="PENDING").first()
     long_session_url = payment_info.session_url
 
     type_tiny = pyshorteners.Shortener()

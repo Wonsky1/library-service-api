@@ -14,7 +14,6 @@ from rest_framework.test import APIClient
 
 from borrowing.models import Borrowing
 from library.models import Book
-from library.serializers import BookDetailSerializer
 
 BOOK_URL = reverse("library:book-list")
 
@@ -232,14 +231,14 @@ class AdminMovieAPITests(TestCase):
         self.assertEqual(book.daily, Decimal("19.99"))
 
     def test_create_book_with_invalid_cover(self):
-        with self.assertRaises(DataError) as context:
+        with self.assertRaises(DataError):
             sample_book(cover="HZ")
 
         self.assertRaises(DataError)
 
     def test_retrieve_book_with_borrowings(self):
         book = sample_book()
-        borrowing = Borrowing.objects.create(
+        Borrowing.objects.create(
             expected_return_date=(
                 datetime.date.today()
                 + datetime.timedelta(days=13)
@@ -250,8 +249,6 @@ class AdminMovieAPITests(TestCase):
 
         url = detail_url(book.id)
         response = self.client.get(url)
-
-        serializer = BookDetailSerializer(book)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("borrowings", response.data)
