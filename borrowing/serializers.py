@@ -39,8 +39,10 @@ class BorrowingSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         borrowing = Borrowing.objects.create(**validated_data)
         book = validated_data["book"]
-        book.inventory -= 1
         book.save()
+
+        request = self.context.get("request")
+        create_stripe_session(borrowing, request)
         return borrowing
 
     @transaction.atomic()
@@ -109,7 +111,6 @@ class BorrowingDetailSerializer(BorrowingSerializer):
 
 
 class BorrowingDetailUserSerializer(UserSerializer):
-
     class Meta:
         model = get_user_model()
         fields = ("id", "email", "first_name", "last_name")
@@ -148,6 +149,14 @@ class BorrowingAdminDetailSerializer(BorrowingDetailSerializer):
 
 
 class BorrowingCreateSerializer(BorrowingSerializer):
+    message = serializers.CharField(
+        max_length=63,
+        default="To initiate the borrowing process of the book, "
+                "please make an initial payment.",
+        read_only=True
+    )
+    payments = PaymentSerializer(many=True, read_only=True)
+
     class Meta:
         model = Borrowing
         fields = (
@@ -155,6 +164,12 @@ class BorrowingCreateSerializer(BorrowingSerializer):
             "borrow_date",
             "expected_return_date",
             "book",
+            "message",
+            "payments",
+        )
+        read_only_fields = (
+            "message",
+            "payments",
         )
 
 

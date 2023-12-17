@@ -62,11 +62,14 @@ class SuccessPaymentView(APIView):
         if payment and borrowing:
             payment.status = "PAID"
             borrowing.actual_return_date = datetime.date.today()
+            borrowing.book.inventory -= 1
+            borrowing.user = self.request.user
+            borrowing.book.save()
             borrowing.save()
             payment.save()
 
             return Response(
-                {"message": "The return of the borrowed book was successful."},
+                {"message": "Payment of the borrowed book was successful."},
                 status=status.HTTP_200_OK
             )
         else:
