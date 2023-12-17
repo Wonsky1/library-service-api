@@ -38,9 +38,16 @@ class BookDetailSerializer(BookSerializer):
             "inventory",
             "daily",
             "borrowings",
+            "image"
         )
 
     def get_borrowings(self, obj):
         borrowing_objects = obj.borrowings.all()
         user_emails = borrowing_objects.values_list("user__email", flat=True)
         return user_emails
+
+
+class BookImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ("id", "image")
