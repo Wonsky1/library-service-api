@@ -13,14 +13,12 @@ class Borrowing(models.Model):
     expected_return_date = models.DateField()
     actual_return_date = models.DateField(null=True, blank=True, default=None)
     book = models.ForeignKey(
-        Book,
-        on_delete=models.CASCADE,
-        related_name="borrowings"
+        Book, on_delete=models.CASCADE, related_name="borrowings"
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="borrowings"
+        related_name="borrowings",
     )
 
     @property
@@ -38,11 +36,7 @@ class Borrowing(models.Model):
         return False
 
     @staticmethod
-    def validate_book_return_time(
-            expected_date,
-            book,
-            error_to_raise
-    ):
+    def validate_book_return_time(expected_date, book, error_to_raise):
         today = timezone.now().date()
         book_inventory = book.inventory
         if expected_date <= today:

@@ -20,7 +20,7 @@ from django.urls import path, include
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
-    SpectacularSwaggerView
+    SpectacularSwaggerView,
 )
 
 from library_config import settings
@@ -35,11 +35,11 @@ urlpatterns = [
     path(
         "api/doc/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger-ui"
+        name="swagger-ui",
     ),
     path(
         "api/doc/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
-        name="redoc"
+        name="redoc",
     ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

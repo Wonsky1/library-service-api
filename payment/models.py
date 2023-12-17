@@ -6,15 +6,6 @@ from user.models import User
 
 
 class Payment(models.Model):
-    # STATUS_CHOICES = {
-    #     "PENDING": "Pending",
-    #     "PAID": "Paid",
-    # }
-    #
-    # TYPE_CHOICES = {
-    #     "PAYMENT": "Payment",
-    #     "FINE": "Fine"
-    # }
     STATUS_CHOICES = [
         ("PENDING", "Pending"),
         ("PAID", "Paid"),

@@ -53,7 +53,7 @@ services:
     build:
       context: .
     command: >
-      sh -c "python manage.py wait_for_db &
+      sh -c "python manage.py wait_for_db &&
             celery -A library_config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler"
     volumes:
       - ./:/app
