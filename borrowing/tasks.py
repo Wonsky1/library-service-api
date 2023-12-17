@@ -1,12 +1,9 @@
 import datetime
 import os
-
 import requests
-
 from borrowing.models import Borrowing
 from celery import shared_task
 from django.utils import timezone
-
 from payment.stripe_helper import FINE_MULTIPLIER
 
 

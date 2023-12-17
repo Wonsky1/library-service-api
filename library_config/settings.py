@@ -13,6 +13,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -181,6 +182,12 @@ SPECTACULAR_SETTINGS = {
 
 CELERY_BROKER_URL = "redis://redis:6379"
 CELERY_RESULT_BACKEND = "redis://redis:6379"
-# CELERY_TIMEZONE = "Europe/Kyiv"
+CELERY_TIMEZONE = "Europe/Kiev"
+CELERY_BEAT_SCHEDULE = {
+    "my-task-every-day": {
+        "task": "borrowing.tasks.borrowing_books",
+        "schedule": crontab(hour=12, minute=0),
+    },
+}
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
