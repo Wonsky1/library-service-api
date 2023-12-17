@@ -37,8 +37,7 @@ services:
     restart: always
     build:
       context: .
-    command:
-            celery -A library_config worker -l INFO
+    command: celery -A library_config worker -l INFO
     volumes:
       - ./:/app
 
