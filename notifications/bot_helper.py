@@ -16,14 +16,14 @@ def check_user(parameter: int):
 def obtain_token(command: str):
     if len(command.split()) == 2:
         try:
-            id = int(command.split()[1])
+            user_id = int(command.split()[1])
         except ValueError:
             return None
 
-        if id <= 0:
+        if user_id <= 0:
             return None
 
-        return id
+        return user_id
     return None
 
 
