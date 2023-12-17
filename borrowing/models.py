@@ -68,4 +68,4 @@ class Borrowing(models.Model):
         )
 
     def __str__(self):
-        return f"{self.book.title}, Taken {self.borrow_date}"
+        return f"Id: {self.id}, {self.book.title}, Taken {self.borrow_date}"
