@@ -1,6 +1,6 @@
 [flake8]
 inline-quotes = "
-ignore = N807, N818
+ignore = N807, N818, W503
 max-line-length = 79
 max-complexity = 18
 select = B,C,E,F,W,T4,B9,Q0,N8,VNE
