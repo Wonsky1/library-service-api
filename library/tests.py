@@ -35,7 +35,7 @@ def detail_url(book_id):
     return reverse("library:book-detail", args=[book_id])
 
 
-class BookTests(TestCase):
+class BookImageUploadTests(TestCase):
 
     def setUp(self):
         self.client = APIClient()
