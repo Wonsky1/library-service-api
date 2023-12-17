@@ -54,12 +54,12 @@ class Borrowing(models.Model):
                 f"greater than. Current book inventory: {book_inventory}"
             )
 
-    # def clean(self):
-    #     Borrowing.validate_book_return_time(
-    #         self.expected_return_date,
-    #         self.book,
-    #         ValidationError,
-    #     )
+    def clean(self):
+        Borrowing.validate_book_return_time(
+            self.expected_return_date,
+            self.book,
+            ValidationError,
+        )
 
     def __str__(self):
         return f"{self.book.title}, Taken {self.borrow_date}"
