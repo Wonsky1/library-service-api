@@ -29,9 +29,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         data = super(BorrowingSerializer, self).validate(attrs=attrs)
         Borrowing.validate_book_return_time(
-            attrs["expected_return_date"],
-            attrs["book"],
-            ValidationError
+            attrs["expected_return_date"], attrs["book"], ValidationError
         )
         return data
 
@@ -47,8 +45,7 @@ class BorrowingSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         returned = instance.actual_return_date
         instance.expected_return_date = validated_data.get(
-            "expected_return_date",
-            instance.expected_return_date
+            "expected_return_date", instance.expected_return_date
         )
         instance.actual_return_date = validated_data.get(
             "actual_return_date", instance.actual_return_date
@@ -109,7 +106,6 @@ class BorrowingDetailSerializer(BorrowingSerializer):
 
 
 class BorrowingDetailUserSerializer(UserSerializer):
-
     class Meta:
         model = get_user_model()
         fields = ("id", "email", "first_name", "last_name")
@@ -143,7 +139,7 @@ class BorrowingAdminDetailSerializer(BorrowingDetailSerializer):
             "book",
             "days_from_borrow",
             "is_active",
-            "payments"
+            "payments",
         )
 
 
@@ -172,8 +168,8 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
     message = serializers.CharField(
         max_length=63,
         default="To successfully complete the return of the borrowed book, "
-                "please make a payment first.",
-        read_only=True
+        "please make a payment first.",
+        read_only=True,
     )
     payments = PaymentSerializer(many=True, read_only=True)
 
