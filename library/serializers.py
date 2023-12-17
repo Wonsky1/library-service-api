@@ -15,7 +15,7 @@ class BookSerializer(serializers.ModelSerializer):
             "cover",
             "inventory",
             "daily",
-            "image"
+            "image",
         )
 
     def to_representation(self, instance):
@@ -37,10 +37,17 @@ class BookDetailSerializer(BookSerializer):
             "cover",
             "inventory",
             "daily",
-            "borrowings"
+            "borrowings",
+            "image"
         )
 
     def get_borrowings(self, obj):
         borrowing_objects = obj.borrowings.all()
         user_emails = borrowing_objects.values_list("user__email", flat=True)
         return user_emails
+
+
+class BookImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ("id", "image")

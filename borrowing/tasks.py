@@ -11,4 +11,3 @@ def count():
         if borrowing.expected_return_date < timezone.localdate():
             total += 1
     return total
-
