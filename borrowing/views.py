@@ -1,7 +1,6 @@
 from django.db import transaction
 from rest_framework import viewsets, serializers, status
 from rest_framework.decorators import action
-from rest_framework import viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,6 +8,7 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 
 from borrowing.models import Borrowing
+from notifications.bot_commands import send_borrowing_notification
 from payment.models import Payment
 from user.permissions import IsAdminOrIfAuthenticatedReadAndCreateOnly
 from borrowing.serializers import (
@@ -57,7 +57,8 @@ class BorrowingViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "is_active",
                 type=bool,
-                description="Filter by borrowing is active (ex. ?is_active=True)",
+                description="Filter by borrowing is active "
+                            "(ex. ?is_active=True)",
                 required=False,
             ),
             OpenApiParameter(
@@ -133,4 +134,8 @@ class BorrowingViewSet(viewsets.ModelViewSet):
                 "You have pending payments. Please pay them before borrowing."
             )
 
-        serializer.save(user=user)
+        borrowing = serializer.save(user=user)
+
+        if user.telegram_id and user.telegram_notifications_enabled:
+            send_borrowing_notification(user.telegram_id, borrowing)
+        return borrowing

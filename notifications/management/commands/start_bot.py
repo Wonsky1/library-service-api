@@ -1,7 +1,7 @@
 import asyncio
 import os
 
-from aiogram import Bot, Dispatcher, types, Router
+from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from django.core.management import BaseCommand
@@ -41,7 +41,7 @@ async def cmd_start(message: types.Message):
             await message.answer(result_message)
 
     else:
-        await message.answer(f"Not found user")
+        await message.answer("Not found user")
 
 
 async def main() -> None:

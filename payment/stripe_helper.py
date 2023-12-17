@@ -1,3 +1,5 @@
+import datetime
+
 import stripe
 
 from django.urls import reverse
@@ -10,41 +12,36 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 FINE_MULTIPLIER = 1.5
 
 
-def count_total_price(borrowing):
+def count_start_price(borrowing):
 
-    if borrowing.borrow_date == borrowing.actual_return_date:
-        days_borrowing = 1
+    days_borrowing = (
+        borrowing.expected_return_date
+        - borrowing.borrow_date
+    ).days + 1
 
-    elif borrowing.expected_return_date >= borrowing.actual_return_date:
-        days_borrowing = (
-                borrowing.actual_return_date
-                - borrowing.borrow_date
-        ).days
-    else:
-        days_borrowing = (
-                borrowing.expected_return_date
-                - borrowing.borrow_date
-        ).days
-
-    price_in_cents = int(
+    start_price_in_cents = int(
         days_borrowing
         * float(borrowing.book.daily)
         * 100
     )
 
+    return start_price_in_cents
+
+
+def count_fine_price(borrowing):
     overdue_days = (
-            borrowing.actual_return_date
-            - borrowing.expected_return_date
+        borrowing.actual_return_date
+        - borrowing.expected_return_date
     ).days
 
-    fine_in_cents = int(
+    fine_price_in_cents = int(
         overdue_days
         * float(borrowing.book.daily)
         * FINE_MULTIPLIER
         * 100
     ) if overdue_days > 0 else 0
 
-    return price_in_cents + fine_in_cents
+    return fine_price_in_cents
 
 
 def create_payment(borrowing, session):
@@ -57,14 +54,20 @@ def create_payment(borrowing, session):
         user=borrowing.user
     )
 
-    if borrowing.actual_return_date > borrowing.expected_return_date:
-        payment.payment_type = "FINE"
+    if borrowing.actual_return_date:
+        if borrowing.actual_return_date > borrowing.expected_return_date:
+            payment.type = "FINE"
+            payment.money_to_pay = round(
+                count_fine_price(borrowing) / 100, 2
+            )
+            payment.save()
+
+            return payment
 
     payment.money_to_pay = round(
-        count_total_price(borrowing) / 100, 2
+        count_start_price(borrowing) / 100, 2
     )
     payment.save()
-
     return payment
 
 
@@ -82,15 +85,17 @@ def create_stripe_session(borrowing, request):
             args=[borrowing.id]
         )
     )
-
-    total_price_in_cents = count_total_price(borrowing)
+    if borrowing.borrow_date == datetime.date.today():
+        price_in_cents = count_start_price(borrowing)
+    else:
+        price_in_cents = count_fine_price(borrowing)
 
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         line_items=[{
             "price_data": {
                 "currency": "usd",
-                "unit_amount": total_price_in_cents,
+                "unit_amount": price_in_cents,
                 "product_data": {
                     "name": borrowing.book.title,
                     "description": f"User: {borrowing.user.email}",
