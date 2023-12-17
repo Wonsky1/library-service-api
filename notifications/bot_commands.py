@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from notifications.bot_utils import asyncio_run
 from notifications.management.commands.start_bot import send_message
 
+import pyshorteners
 
 load_dotenv()
 
@@ -27,14 +28,25 @@ async def _send_overdue_notification(
 
 
 async def _send_borrowing_notification(
-    telegram_id: int, borrowing_info: dict
-) -> None:
-    await send_message(telegram_id, "borrowing")
+    telegram_id,
+    message
+):
+    await send_message(telegram_id, message=message)
 
 
-def send_borrowing_notification(user: dict, borrowing_info: dict) -> None:
+def send_borrowing_notification(telegram_id, borrowing) -> None:
+    payment_info = pending_payment = borrowing.payments.filter(status="PENDING").first()
+    long_session_url = payment_info.session_url
+
+    type_tiny = pyshorteners.Shortener()
+    short_session_url = type_tiny.tinyurl.short(long_session_url)
+
+    money = payment_info.money_to_pay
+    message = (f"📕 You have new borrowing: {borrowing.book.title}! " 
+               f"💰You need to pay {money} USD "
+               f"🔗You can do it here: {short_session_url}")
     asyncio_run(
-        _send_borrowing_notification(user["telegram_id"], borrowing_info)
+        _send_borrowing_notification(telegram_id, message)
     )
 
 
