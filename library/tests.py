@@ -5,7 +5,6 @@ from decimal import Decimal
 
 from PIL import Image
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 from django.db.utils import DataError
@@ -241,7 +240,10 @@ class AdminMovieAPITests(TestCase):
     def test_retrieve_book_with_borrowings(self):
         book = sample_book()
         borrowing = Borrowing.objects.create(
-            expected_return_date=datetime.date.today() + datetime.timedelta(days=13),
+            expected_return_date=(
+                datetime.date.today()
+                + datetime.timedelta(days=13)
+            ),
             book=book,
             user=self.user,
         )

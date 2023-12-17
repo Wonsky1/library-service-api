@@ -14,7 +14,10 @@ FINE_MULTIPLIER = 1.5
 
 def count_start_price(borrowing):
 
-    days_borrowing = (borrowing.expected_return_date - borrowing.borrow_date).days + 1
+    days_borrowing = (
+        borrowing.expected_return_date
+        - borrowing.borrow_date
+    ).days + 1
 
     start_price_in_cents = int(
         days_borrowing
@@ -27,8 +30,8 @@ def count_start_price(borrowing):
 
 def count_fine_price(borrowing):
     overdue_days = (
-            borrowing.actual_return_date
-            - borrowing.expected_return_date
+        borrowing.actual_return_date
+        - borrowing.expected_return_date
     ).days
 
     fine_price_in_cents = int(

@@ -56,7 +56,8 @@ class BorrowingViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "is_active",
                 type=bool,
-                description="Filter by borrowing is active (ex. ?is_active=True)",
+                description="Filter by borrowing is active "
+                            "(ex. ?is_active=True)",
                 required=False,
             ),
             OpenApiParameter(

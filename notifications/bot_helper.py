@@ -31,8 +31,9 @@ def obtain_token(command: str):
 def connected_user_with_telegram(
     user: get_user_model(), telegram_id: int
 ) -> str:
-    if not user.telegram_id is None:
-        return "You need to reset your telegram id, to connect to this telegram account"
+    if user.telegram_id is not None:
+        return ("You need to reset your telegram id,"
+                " to connect to this telegram account")
 
     if not user.telegram_notifications_enabled:
         return "You need to enable notifications in your profile"
