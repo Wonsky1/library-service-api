@@ -25,7 +25,8 @@ def asyncio_run(coro: Awaitable[T], timeout=30) -> T:
     This plays well with gevent, since it can yield on the Future result call.
 
     :param coro: A coroutine, typically an async method
-    :param timeout: How many seconds we should wait for a result before raising an error
+    :param timeout: How many seconds we should wait for a
+    result before raising an error
     """
     return asyncio.run_coroutine_threadsafe(coro, _LOOP).result(
         timeout=timeout

@@ -41,7 +41,9 @@ async def cmd_start(message: types.Message):
             await message.answer(result_message)
 
     else:
-        await message.answer("Just use telegram_auth_link for authentication in bot.")
+        await message.answer(
+            "Just use telegram_auth_link for authentication in bot."
+        )
 
 
 async def main() -> None:

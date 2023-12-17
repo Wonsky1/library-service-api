@@ -16,7 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ("is_staff", "telegram_id")
         extra_kwargs = {"password": {"write_only": True, "min_length": 5}}
 
-
     def create(self, validated_data):
         """Create a new user with encrypted password and return it"""
         return get_user_model().objects.create_user(**validated_data)
@@ -34,7 +33,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DetailUserSerializer(UserSerializer):
     telegram_auth_link = serializers.SerializerMethodField()
-
 
     class Meta:
         model = get_user_model()
