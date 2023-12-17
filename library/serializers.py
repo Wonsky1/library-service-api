@@ -15,7 +15,7 @@ class BookSerializer(serializers.ModelSerializer):
             "cover",
             "inventory",
             "daily",
-            "image"
+            "image",
         )
 
     def to_representation(self, instance):
@@ -37,7 +37,7 @@ class BookDetailSerializer(BookSerializer):
             "cover",
             "inventory",
             "daily",
-            "borrowings"
+            "borrowings",
         )
 
     def get_borrowings(self, obj):
