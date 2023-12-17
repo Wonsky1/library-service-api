@@ -41,9 +41,9 @@ def send_borrowing_notification(user: dict, borrowing_info: dict) -> None:
 def send_overdue_notification(
     users: dict,
 ) -> None:
-    for user in users.values():
+    for user in users:
         asyncio_run(
-            _send_overdue_notification(user["telegram_id"], user["overdues"])
+            _send_overdue_notification(user, users[user]["book"])
         )
 
 

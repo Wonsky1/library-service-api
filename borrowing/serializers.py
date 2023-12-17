@@ -220,3 +220,9 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
         create_stripe_session(instance, request)
 
         return instance
+
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Borrowing
+        fields = "__all__"
