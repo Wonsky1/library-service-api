@@ -8,6 +8,7 @@ asgiref==3.7.2
 async-timeout==4.0.3
 attrs==23.1.0
 billiard==4.2.0
+black==23.12.0
 celery==5.3.6
 certifi==2023.11.17
 charset-normalizer==3.3.2
@@ -24,6 +25,7 @@ django-timezone-field==6.1.0
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.3.1
 drf-spectacular==0.27.0
+flake8==6.1.0
 frozenlist==1.4.0
 idna==3.6
 inflection==0.5.1
@@ -32,12 +34,19 @@ jsonschema==4.20.0
 jsonschema-specifications==2023.11.2
 kombu==5.3.4
 magic-filter==1.0.12
+mccabe==0.7.0
 multidict==6.0.4
+mypy-extensions==1.0.0
+packaging==23.2
+pathspec==0.12.1
 Pillow==10.1.0
+platformdirs==4.1.0
 prompt-toolkit==3.0.43
 psycopg2-binary==2.9.9
+pycodestyle==2.11.1
 pydantic==2.5.2
 pydantic_core==2.14.5
+pyflakes==3.1.0
 PyJWT==2.8.0
 python-crontab==3.0.0
 python-dateutil==2.8.2
