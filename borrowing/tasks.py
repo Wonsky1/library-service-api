@@ -13,5 +13,5 @@ def borrowing_books():
         if borrowing.expected_return_date < timezone.localdate() and borrowing.user.telegram_notifications_enabled:
             borrowing_serializer = TaskSerializer(borrowing)
             users[borrowing.user.telegram_id] = borrowing_serializer.data
-    # return users
-    send_overdue_notification(users)
+    return users
+    # send_overdue_notification(users)
