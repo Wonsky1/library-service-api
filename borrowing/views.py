@@ -124,6 +124,7 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         user = self.request.user
+
         has_pending_payments = Payment.objects.filter(
             user=user, status="PENDING"
         ).exists()
