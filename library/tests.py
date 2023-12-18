@@ -5,9 +5,9 @@ from decimal import Decimal
 
 from PIL import Image
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
-from django.db.utils import DataError
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -231,17 +231,16 @@ class AdminMovieAPITests(TestCase):
         self.assertEqual(book.daily, Decimal("19.99"))
 
     def test_create_book_with_invalid_cover(self):
-        with self.assertRaises(DataError):
-            sample_book(cover="HZ")
+        with self.assertRaises(ValidationError):
+            sample_book(cover="F")
 
-        self.assertRaises(DataError)
+        self.assertRaises(ValidationError)
 
     def test_retrieve_book_with_borrowings(self):
         book = sample_book()
         Borrowing.objects.create(
             expected_return_date=(
-                datetime.date.today()
-                + datetime.timedelta(days=13)
+                datetime.date.today() + datetime.timedelta(days=13)
             ),
             book=book,
             user=self.user,

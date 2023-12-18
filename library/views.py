@@ -1,3 +1,4 @@
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAdminUser
 from library.models import Book
 from library.permissions import IsAdminOrReadOnly
@@ -22,6 +23,26 @@ class BookViewSet(viewsets.ModelViewSet):
         if self.action == "upload_image":
             return BookImageSerializer
         return BookSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            return Response(
+                {
+                    "cover": f"Cover must be one of the following: "
+                    f"{Book.COVER_CHOICES[0][0]} "
+                    f"or {Book.COVER_CHOICES[1][0]}"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     @action(
         methods=["POST"],
