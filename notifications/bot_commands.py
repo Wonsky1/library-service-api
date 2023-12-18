@@ -8,9 +8,7 @@ import pyshorteners
 
 load_dotenv()
 
-ADMIN_GROUP = (
-    int(os.getenv("ADMIN_GROUP")) if os.getenv("ADMIN_GROUP") else None
-)
+ADMIN_GROUP = int(os.getenv("ADMIN_GROUP"), 0)
 
 
 async def _send_payment_notification(
@@ -20,7 +18,8 @@ async def _send_payment_notification(
 ):
     if telegram_id:
         await send_message(telegram_id, message=message_to_user)
-    await send_message(ADMIN_GROUP, message=message_to_admin)
+    if ADMIN_GROUP:
+        await send_message(ADMIN_GROUP, message=message_to_admin)
 
 
 async def _send_overdue_notification(
@@ -28,7 +27,8 @@ async def _send_overdue_notification(
         message
 ):
     await send_message(telegram_id, message=message)
-    await send_message(ADMIN_GROUP, "overdue")
+    if ADMIN_GROUP:
+        await send_message(ADMIN_GROUP, "overdue")
 
 
 async def _send_borrowing_notification(
@@ -38,7 +38,8 @@ async def _send_borrowing_notification(
 ):
     if telegram_id:
         await send_message(telegram_id, message=message_to_user)
-    await send_message(ADMIN_GROUP, message=message_to_admin)
+    if ADMIN_GROUP:
+        await send_message(ADMIN_GROUP, message=message_to_admin)
 
 
 def send_borrowing_notification(user, borrowing):
