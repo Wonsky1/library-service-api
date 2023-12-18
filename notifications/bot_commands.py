@@ -10,6 +10,9 @@ load_dotenv()
 
 ADMIN_GROUP = int(os.getenv("ADMIN_GROUP"), 0)
 
+PAYMENT_IMAGE_URL = "https://i.imgur.com/VWH0a9i.jpg"
+BORROWING_IMAGE_URL = "https://i.imgur.com/Yjf9ARQ.jpg"
+
 
 async def _send_payment_notification(
         telegram_id,
@@ -17,9 +20,18 @@ async def _send_payment_notification(
         message_to_admin
 ):
     if telegram_id:
-        await send_message(telegram_id, message=message_to_user)
+        await send_message(
+            telegram_id=telegram_id,
+            message=message_to_user,
+            image=PAYMENT_IMAGE_URL
+
+        )
     if ADMIN_GROUP:
-        await send_message(ADMIN_GROUP, message=message_to_admin)
+        await send_message(
+            telegram_id=ADMIN_GROUP,
+            message=message_to_admin,
+            image=PAYMENT_IMAGE_URL
+        )
 
 
 async def _send_overdue_notification(
@@ -28,7 +40,10 @@ async def _send_overdue_notification(
 ):
     await send_message(telegram_id, message=message)
     if ADMIN_GROUP:
-        await send_message(ADMIN_GROUP, "overdue")
+        await send_message(
+            telegram_id=ADMIN_GROUP,
+            message="overdue"
+        )
 
 
 async def _send_borrowing_notification(
@@ -37,9 +52,17 @@ async def _send_borrowing_notification(
         message_to_admin,
 ):
     if telegram_id:
-        await send_message(telegram_id, message=message_to_user)
+        await send_message(
+            telegram_id=telegram_id,
+            message=message_to_user,
+            image=BORROWING_IMAGE_URL
+        )
     if ADMIN_GROUP:
-        await send_message(ADMIN_GROUP, message=message_to_admin)
+        await send_message(
+            telegram_id=ADMIN_GROUP,
+            message=message_to_admin,
+            image=BORROWING_IMAGE_URL
+        )
 
 
 def send_borrowing_notification(user, borrowing):

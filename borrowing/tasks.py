@@ -48,7 +48,7 @@ def borrowing_books():
                     f"&caption=📕 You have an outdated borrowing: "
                     f"{borrowing.book.title} for {overdued_days}"
                     f" days. 💰You have to pay additional "
-                    f"{additional_price}USD 🔗, please return the book"
+                    f"{additional_price}$, please return the book"
                 )
                 requests.get(url_for_user)
 
@@ -59,7 +59,7 @@ def borrowing_books():
                 f"&caption=📕 User {borrowing.user.email} "
                 f"has borrowing overdue for book: {borrowing.book.title} "
                 f"for {overdued_days}"
-                f" days. He has to pay additional {additional_price}USD 🔗"
+                f" days. He has to pay additional {additional_price}$💰"
             )
             requests.get(url_for_admin_group)
             nobody_borrowed = False

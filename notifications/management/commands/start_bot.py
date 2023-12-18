@@ -21,11 +21,24 @@ bot = Bot(os.getenv("BOT_TOKEN"))
 dp = Dispatcher()
 
 
-async def send_message(telegram_id: int, message: str):
-    await bot.send_message(
-        chat_id=telegram_id, text=message, parse_mode=ParseMode.MARKDOWN
-    )
+async def send_message(
+        telegram_id: int,
+        message: str,
+        image: str = None
+):
 
+    if image:
+        await bot.send_photo(
+            chat_id=telegram_id,
+            photo=image,
+            caption=message
+        )
+    else:
+        await bot.send_message(
+            chat_id=telegram_id,
+            text=message,
+            parse_mode=ParseMode.MARKDOWN
+        )
 
 @dp.message(CommandStart())
 async def cmd_start(message: types.Message):
