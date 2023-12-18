@@ -8,7 +8,7 @@ import pyshorteners
 
 load_dotenv()
 
-ADMIN_GROUP = int(os.getenv("ADMIN_GROUP"), 0)
+ADMIN_GROUP = int(os.getenv("ADMIN_GROUP", 0))
 
 PAYMENT_IMAGE_URL = "https://i.imgur.com/VWH0a9i.jpg"
 BORROWING_IMAGE_URL = "https://i.imgur.com/Yjf9ARQ.jpg"
