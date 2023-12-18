@@ -18,7 +18,8 @@ async def _send_payment_notification(
         message_to_user,
         message_to_admin
 ):
-    await send_message(telegram_id, message=message_to_user)
+    if telegram_id:
+        await send_message(telegram_id, message=message_to_user)
     await send_message(ADMIN_GROUP, message=message_to_admin)
 
 
@@ -35,11 +36,12 @@ async def _send_borrowing_notification(
         message_to_user,
         message_to_admin,
 ):
-    await send_message(telegram_id, message=message_to_user)
+    if telegram_id:
+        await send_message(telegram_id, message=message_to_user)
     await send_message(ADMIN_GROUP, message=message_to_admin)
 
 
-def send_borrowing_notification(telegram_id, borrowing):
+def send_borrowing_notification(user, borrowing):
     payment_info = borrowing.payments.filter(status="PENDING").first()
     long_session_url = payment_info.session_url
 
@@ -47,11 +49,17 @@ def send_borrowing_notification(telegram_id, borrowing):
     short_session_url = type_tiny.tinyurl.short(long_session_url)
 
     money = payment_info.money_to_pay
+
+    telegram_id = None
+    if user.telegram_notifications_enabled and user.telegram_id:
+        telegram_id = user.telegram_id
+
     message_to_user = (
         f"📕 You have new borrowing: {borrowing.book.title}! "
         f"💰You need to pay {money} $ "
         f"🔗You can do it here: {short_session_url}"
     )
+
     message_to_admin = (
         f"📕 New borrowing: {borrowing.book.title} from "
         f"✉️ user {borrowing.user.email}."
@@ -75,12 +83,17 @@ def send_overdue_notification(
         )
 
 
-def send_payment_notification(telegram_id, payment):
+def send_payment_notification(user, payment):
+    telegram_id = None
+    if user.telegram_notifications_enabled and user.telegram_id:
+        telegram_id = user.telegram_id
+
     message_to_user = (
         f"💰 Payment for 📕 {payment.borrowing.book.title} successful! "
         f"Paid: {payment.money_to_pay} $"
     )
     message_to_admin = message_to_user + f" by user {payment.user.email}"
+
     asyncio_run(
         _send_payment_notification(
             telegram_id,
