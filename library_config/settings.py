@@ -168,9 +168,9 @@ SIMPLE_JWT = {
 }
 
 SPECTACULAR_DEFAULTS = {
-    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
+    "SERVE_PUBLIC": True,
+    "SERVE_AUTHENTICATION": None,
 }
-
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Library service API",
