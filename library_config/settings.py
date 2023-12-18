@@ -167,6 +167,11 @@ SIMPLE_JWT = {
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZE",
 }
 
+SPECTACULAR_DEFAULTS = {
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.AllowAny"],
+}
+
+
 SPECTACULAR_SETTINGS = {
     "TITLE": "Library service API",
     "DESCRIPTION": "Look at the information and borrow books",
