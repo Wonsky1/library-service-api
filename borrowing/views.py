@@ -115,10 +115,6 @@ class BorrowingViewSet(viewsets.ModelViewSet):
                 )
 
             serializer.save()
-            borrowing.actual_return_date = serializer.validated_data.get(
-                "actual_return_date"
-            )
-            borrowing.save()
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
