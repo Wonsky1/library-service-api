@@ -62,8 +62,10 @@ class SuccessPaymentView(APIView):
 
         if payment and borrowing:
             payment.status = "PAID"
-            borrowing.actual_return_date = datetime.date.today()
-            borrowing.book.inventory -= 1
+            if borrowing.payments.count() == 2:
+                borrowing.actual_return_date = datetime.date.today()
+            if borrowing.payments.count() == 1:
+                borrowing.book.inventory -= 1
             borrowing.user = self.request.user
             borrowing.book.save()
             borrowing.save()

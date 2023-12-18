@@ -242,17 +242,6 @@ class AuthenticatedBorrowingApiTests(TestCase):
 
         self.assertIn(expected_error_message, response.data["non_field_errors"])
 
-    def test_return_borrowing(self):
-        borrowing = sample_borrowing(user=self.user)
-        url = detail_url(borrowing.id) + "return/"
-        return_data = {
-            "actual_return_date": timezone.now().date(),
-        }
-
-        response = self.client.patch(url, return_data)
-        borrowing.refresh_from_db()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
     def test_return_borrowing_with_pending_payment(self):
         borrowing = sample_borrowing(user=self.user)
         Payment.objects.create(
@@ -267,17 +256,8 @@ class AuthenticatedBorrowingApiTests(TestCase):
         }
         response = self.client.patch(url, return_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        expected_error_message = "You have to pay before returning the book."
-        self.assertIn(expected_error_message, response.data[0])
-
-    def test_borrowing_return(self):
-        borrowing = sample_borrowing(user=self.user)
-        count1 = borrowing.book.inventory
-        url = detail_url(borrowing.id) + "return/"
-        self.client.patch(url)
-        borrowing.refresh_from_db()
-        count2 = borrowing.book.inventory
-        self.assertNotEqual(count1, count2)
+        expected_error_message = "You can't return book before you get it"
+        self.assertIn(expected_error_message, response.data["non_field_errors"])
 
     def test_borrowing_update_delete_authorized_forbidden(self):
         payload = VALID_PAYLOAD

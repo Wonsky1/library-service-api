@@ -2,6 +2,7 @@ import datetime
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -181,12 +182,8 @@ class BorrowingUpdateSerializer(BorrowingSerializer):
 
 
 class BorrowingReturnSerializer(serializers.ModelSerializer):
-    message = serializers.CharField(
-        max_length=63,
-        default="To successfully complete the return of the borrowed book, "
-        "please make a payment first.",
-        read_only=True,
-    )
+
+    message = serializers.SerializerMethodField()
     payments = PaymentSerializer(many=True, read_only=True)
 
     class Meta:
@@ -200,6 +197,14 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
             "payments",
         )
 
+    def get_message(self, obj):
+        if (timezone.now().date() - obj.expected_return_date).days <= 0:
+            return "You successfully returned the book"
+        return (
+            "To successfully complete the return of the "
+            "borrowed book, please make a payment first."
+        )
+
     def validate(self, attrs):
         borrowing = self.instance
 
@@ -207,6 +212,9 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "The borrowed book has already been returned."
             )
+        payment = Payment.objects.filter(borrowing=borrowing).first()
+        if payment.status == "PENDING" and borrowing.actual_return_date is None:
+            raise serializers.ValidationError("You can't return book before you get it")
 
         return attrs
 
@@ -217,7 +225,8 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
         instance.save()
 
         request = self.context.get("request")
-        create_stripe_session(instance, request)
+        if not (timezone.now().date() - instance.expected_return_date).days <= 0:
+            create_stripe_session(instance, request)
 
         return instance
 
