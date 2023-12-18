@@ -1,5 +1,6 @@
 import datetime
 
+from drf_spectacular.utils import extend_schema
 from rest_framework import mixins, viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -23,7 +24,9 @@ class PaymentViewSet(
 ):
     queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
-    permission_classes = [IsAdminOrIfAuthenticatedReadOnly, ]
+    permission_classes = [
+        IsAdminOrIfAuthenticatedReadOnly,
+    ]
 
     def get_queryset(self):
         queryset = self.queryset
@@ -52,8 +55,23 @@ class PaymentViewSet(
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @extend_schema(
+        description="Get all payments is unreal. " "Try get payment by id",
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Get one payment from all by id (For admin)",
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
 
 class SuccessPaymentView(APIView):
+    @extend_schema(
+        description="Confirm payment by id (For admin)",
+    )
     def get(self, request, *args, **kwargs):
         borrowing_id = kwargs.get("pk")
 
@@ -75,25 +93,27 @@ class SuccessPaymentView(APIView):
 
             return Response(
                 {"message": "Payment of the borrowed book was successful."},
-                status=status.HTTP_200_OK
+                status=status.HTTP_200_OK,
             )
         else:
             return Response(
                 {"message": "Payment not found or already completed."},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 
 class CancelPaymentView(APIView):
+    @extend_schema(
+        description="Cancel payment by id (For admin)",
+    )
     def get(self, request, *args, **kwargs):
         borrowing_id = kwargs.get("pk")
         payment = Payment.objects.filter(borrowing_id=borrowing_id).first()
 
         if payment:
-
             return Response(
                 {"message": "The payment can be made a little later."},
-                status=status.HTTP_200_OK
+                status=status.HTTP_200_OK,
             )
         else:
             return Response(
