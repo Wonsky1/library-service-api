@@ -7,6 +7,9 @@ from django.utils import timezone
 from payment.stripe_helper import FINE_MULTIPLIER
 
 
+OVERDUE_IMAGE_URL = "https://i.imgur.com/258kR4X.jpg"
+
+
 def get_fine_price(borrowing):
     overdue_days = (
         timezone.localdate()
@@ -40,8 +43,9 @@ def borrowing_books():
             ):
                 url_for_user = (
                     f"https://api.telegram.org/bot{os.getenv('BOT_TOKEN')}"
-                    f"/sendMessage?chat_id={borrowing.user.telegram_id}"
-                    f"&text=📕 You have an outdated borrowing: "
+                    f"/sendPhoto?chat_id={borrowing.user.telegram_id}"
+                    f"&photo={OVERDUE_IMAGE_URL}"
+                    f"&caption=📕 You have an outdated borrowing: "
                     f"{borrowing.book.title} for {overdued_days}"
                     f" days. 💰You have to pay additional "
                     f"{additional_price}USD 🔗, please return the book"
@@ -50,8 +54,9 @@ def borrowing_books():
 
             url_for_admin_group = (
                 f"https://api.telegram.org/bot{os.getenv('BOT_TOKEN')}"
-                f"/sendMessage?chat_id={os.getenv('ADMIN_GROUP')}"
-                f"&text=📕 User {borrowing.user.email} "
+                f"/sendPhoto?chat_id={os.getenv('ADMIN_GROUP')}"
+                f"&photo={OVERDUE_IMAGE_URL}"
+                f"&caption=📕 User {borrowing.user.email} "
                 f"has borrowing overdue for book: {borrowing.book.title} "
                 f"for {overdued_days}"
                 f" days. He has to pay additional {additional_price}USD 🔗"
