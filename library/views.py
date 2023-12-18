@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiExample
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAdminUser
 from library.models import Book
@@ -24,6 +25,22 @@ class BookViewSet(viewsets.ModelViewSet):
             return BookImageSerializer
         return BookSerializer
 
+    @extend_schema(
+        description="Add a new book (For admin)",
+        examples=[
+            OpenApiExample(
+                "Book create",
+                value={
+                    "title": "Sample Book",
+                    "author": "John Doe",
+                    "cover": "HARD",
+                    "inventory": 10,
+                    "daily": "10.99",
+                    "image": "null",
+                },
+            ),
+        ],
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         try:
@@ -51,6 +68,7 @@ class BookViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAdminUser],
     )
     def upload_image(self, request, pk=None):
+        """Endpoint for uploading image to specific book"""
         book = self.get_object()
         serializer = self.get_serializer(book, data=request.data)
 
@@ -59,3 +77,54 @@ class BookViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        description="Get all books in our library (For all)",
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Get book by id (For all)",
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Fully update book by id (For admin)",
+        examples=[
+            OpenApiExample(
+                "Book update",
+                value={
+                    "title": "Sample Book",
+                    "author": "John Doe",
+                    "cover": "HARD",
+                    "inventory": 10,
+                    "daily": "10.99",
+                    "image": "null",
+                },
+            ),
+        ],
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Partial update book by id (For admin)",
+        examples=[
+            OpenApiExample(
+                "Update title",
+                value={
+                    "title": "Sample Book",
+                },
+            ),
+            OpenApiExample(
+                "Update author",
+                value={
+                    "author": "John Doe",
+                },
+            ),
+        ],
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
