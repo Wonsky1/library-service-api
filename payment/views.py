@@ -69,11 +69,7 @@ class SuccessPaymentView(APIView):
             borrowing.save()
             payment.save()
 
-            if (
-                borrowing.user.telegram_id
-                and borrowing.user.telegram_notifications_enabled
-            ):
-                send_payment_notification(borrowing.user.telegram_id, payment)
+            send_payment_notification(borrowing.user, payment)
 
             return Response(
                 {"message": "Payment of the borrowed book was successful."},

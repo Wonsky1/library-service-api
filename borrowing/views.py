@@ -136,6 +136,6 @@ class BorrowingViewSet(viewsets.ModelViewSet):
 
         borrowing = serializer.save(user=user)
 
-        if user.telegram_id and user.telegram_notifications_enabled:
-            send_borrowing_notification(user.telegram_id, borrowing)
+        send_borrowing_notification(user, borrowing)
+
         return borrowing
