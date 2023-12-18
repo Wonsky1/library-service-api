@@ -18,6 +18,11 @@ class BookSerializer(serializers.ModelSerializer):
             "image",
         )
 
+    def validate(self, attrs):
+        Book.validate_cover_choice(attrs["cover"], serializers.ValidationError)
+        data = super().validate(attrs)
+        return data
+
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         cover_value = instance.get_cover_display()
@@ -38,7 +43,7 @@ class BookDetailSerializer(BookSerializer):
             "inventory",
             "daily",
             "borrowings",
-            "image"
+            "image",
         )
 
     def get_borrowings(self, obj):
