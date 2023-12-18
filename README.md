@@ -2,6 +2,16 @@
 
 Welcome to the Library Management Service API! This API is a Django-based web application designed to modernize and automate the management of book borrowings, payments, and notifications for a library. The system optimizes the work of library administrators and enhances the user experience.
 
+![image](https://github.com/petrykivd/library-service-api/assets/111526221/0786e87f-6d1c-4dcb-9c4e-3a3e4c10baf5)
+
+To provide an even better user experience, we have integrated a Telegram bot for real-time notifications. Our Telegram bot is responsible for notifying users about the following events:
+
+New Borrowing: Users will receive a notification when they successfully create a new borrowing, providing details about the borrowed book and the due date.
+
+Successful Payment: Upon successful payment for a borrowing or fine, users will receive a notification confirming the payment, including relevant details.
+
+To enable Telegram notifications, users need to set up their Telegram account within the Library Management Service. This feature ensures that users stay informed and up-to-date on their library activities through the convenience of Telegram.
+
 ## Getting Started
 
 ### Prerequisites
@@ -82,19 +92,7 @@ docker-compose up --build
 </details>
 
 <details>
-  <summary>Show Themes</summary>
-  
-- **List Show Themes**: `GET /api/planetarium/show-themes/`
-- **Create Show Theme**: `POST /api/planetarium/show-themes/`
-- **Retrieve Show Theme**: `GET /api/planetarium/show-themes/{show_theme_id}/`
-- **Update Show Theme**: `PUT /api/planetarium/show-themes/{show_theme_id}/`
-- **Partial Update** `PATCH /api/planetarium/show-themes/{show_theme_id}/`
-- **Delete Show Theme**: `DELETE /api/planetarium/show-themes/{show_theme_id}/`
-</details>
-
-<details>
   <summary>User</summary>
-  
 - **Information about current User**: `GET /api/user/me/`
 - **Update User**: `PUT /api/user/me/`
 - **Partial Update** `PATCH /api/user/me/`
@@ -114,7 +112,7 @@ docker-compose up --build
 - Access the API documentation by running the server and navigating to http://localhost:8000/api/doc/swagger/ or http://localhost:8000/api/doc/redoc/.
 
 ## DB Structure
-![image]()
+![image](https://github.com/petrykivd/library-service-api/assets/111526221/35fbed54-64da-43fb-b18e-e004b1e78e3a)
 
 ## Contributing
 
