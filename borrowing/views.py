@@ -5,7 +5,11 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import (
+    extend_schema,
+    OpenApiParameter,
+    OpenApiExample
+)
 
 from borrowing.models import Borrowing
 from notifications.bot_commands import send_borrowing_notification
@@ -53,21 +57,21 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         return queryset.filter(user=self.request.user)
 
     @extend_schema(
+        description="Get all borrowings in our library (For admin), "
+        "and your own borrowings (For authenticated users)",
         parameters=[
             OpenApiParameter(
                 "is_active",
                 type=bool,
                 description="Filter by borrowing is active "
                             "(ex. ?is_active=True)",
-                required=False,
             ),
             OpenApiParameter(
                 "user_id",
                 type=int,
                 description="Filter by user id (ex. ?user_id=2)",
-                required=False,
             ),
-        ]
+        ],
     )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
@@ -135,3 +139,65 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         send_borrowing_notification(user, borrowing)
 
         return borrowing
+
+    @extend_schema(
+        description="Create new borrowing, "
+        "if you don't have overdue or pending payments "
+        "(For authenticated users)",
+        examples=[
+            OpenApiExample(
+                "Borrowing create",
+                {
+                    "expected_return_date": "yyyy-mm-dd "
+                    "(less than 14 days from today)",
+                    "book": 1,
+                },
+            ),
+        ],
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Get one borrowing from all by id (For admin), "
+        "and your own borrowing (For authenticated users)",
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Fully update borrowing by id (For admin)",
+        examples=[
+            OpenApiExample(
+                "Borrowing update",
+                {
+                    "expected_return_date": "yyyy-mm-dd "
+                    "(less than 14 days from today)",
+                    "book": 1,
+                },
+            ),
+        ],
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @extend_schema(
+        description="Partial update borrowing by id (For admin)",
+        examples=[
+            OpenApiExample(
+                "Update expected_return_date",
+                {
+                    "expected_return_date": "yyyy-mm-dd "
+                    "(less than 14 days from today)",
+                },
+            ),
+            OpenApiExample(
+                "Update book",
+                {
+                    "book": 1,
+                },
+            ),
+        ],
+    )
+    def partial_update(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
