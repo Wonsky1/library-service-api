@@ -218,6 +218,7 @@ class BorrowingReturnSerializer(serializers.ModelSerializer):
 
         return attrs
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         instance.actual_return_date = datetime.date.today()
         instance.book.inventory += 1
