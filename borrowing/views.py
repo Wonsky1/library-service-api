@@ -52,7 +52,7 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         if self.request.user.is_staff and user_id:
             queryset = queryset.filter(user_id=int(user_id))
 
-        if self.request.user.is_staff is True:
+        if self.request.user.is_staff:
             return queryset
         return queryset.filter(user=self.request.user)
 
@@ -79,9 +79,9 @@ class BorrowingViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list" and self.request.user.is_staff is False:
             return BorrowingListSerializer
-        if self.action == "list" and self.request.user.is_staff is True:
+        if self.action == "list" and self.request.user.is_staff:
             return BorrowingAdminListSerializer
-        if self.action == "retrieve" and self.request.user.is_staff is True:
+        if self.action == "retrieve" and self.request.user.is_staff:
             return BorrowingAdminDetailSerializer
         if self.action == "retrieve":
             return BorrowingDetailSerializer
