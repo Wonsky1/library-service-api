@@ -107,7 +107,7 @@ class BorrowingViewSet(viewsets.ModelViewSet):
         borrowing = self.get_object()
         serializer = self.get_serializer(instance=borrowing, data=request.data)
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             payment_pending = Payment.objects.filter(
                 user=user, borrowing=borrowing, status="PENDING"
             ).first()
